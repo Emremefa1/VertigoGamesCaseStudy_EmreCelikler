@@ -161,10 +161,10 @@ namespace WheelGame.UI
             if (!waitingForBombAction) return;
             waitingForBombAction = false;
 
-            // Game over - end the game completely
+            // Clear temporary rewards but keep banked value when giving up on bomb
             if (rewardManager != null)
             {
-                rewardManager.ResetAll(); // Reset everything - game over
+                rewardManager.ResetTemporaryOnly();
             }
             
             // Clear rewards display panel

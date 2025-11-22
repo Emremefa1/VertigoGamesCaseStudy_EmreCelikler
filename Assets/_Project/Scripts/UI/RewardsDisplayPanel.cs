@@ -14,11 +14,13 @@ namespace WheelGame.UI
     public class RewardsDisplayPanel : MonoBehaviour
     {
         [Header("UI References")]
-        [SerializeField] private Button ui_button_exit;
         [SerializeField] private GridLayoutGroup ui_grid_rewards_container;
         [SerializeField] private TMP_Text ui_text_reward_total_value;
         [SerializeField] private GameObject rewardItemPrefab;
         [SerializeField] private RectTransform rewardsContainer;
+
+        [Header("Icons")]
+        [SerializeField] private Sprite goldIcon;
 
         [Header("Settings")]
         [SerializeField] private int maxDisplayItems = 12;
@@ -32,7 +34,6 @@ namespace WheelGame.UI
         private void OnValidate()
         {
             // Auto-find references by naming convention
-            if (ui_button_exit == null) ui_button_exit = transform.Find("Button_Exit")?.GetComponent<Button>();
             if (rewardsContainer == null) rewardsContainer = transform.Find("Container_Rewards")?.GetComponent<RectTransform>();
             if (ui_text_reward_total_value == null) ui_text_reward_total_value = transform.Find("Text_TotalValue")?.GetComponent<TMP_Text>();
         }
@@ -40,19 +41,6 @@ namespace WheelGame.UI
         public void Initialize(RewardManager rm)
         {
             rewardManager = rm;
-
-            if (ui_button_exit != null)
-            {
-                ui_button_exit.onClick.RemoveAllListeners();
-                ui_button_exit.onClick.AddListener(() =>
-                {
-                    if (rewardManager != null)
-                    {
-                        rewardManager.WalkAway();
-                        ClearDisplay();
-                    }
-                });
-            }
 
             EventBus.OnSpinCompleted += OnRewardEarned;
             EventBus.OnRewardChanged += UpdateTotalDisplay;
@@ -147,22 +135,29 @@ namespace WheelGame.UI
                 // Item already earned once, convert to gold but keep item displayed
                 int goldValue = sliceDef.itemGoldConversionValue;
                 
-                // Add gold reward
-                if (displayedRewards.TryGetValue(RewardType.Gold, out var goldView))
+                // Add to banked rewards directly
+                if (rewardManager != null)
                 {
-                    goldView.AddQuantity(goldValue);
+                    rewardManager.ConvertItemToGold(goldValue);
                 }
-                else if (displayedRewards.Count + displayedItems.Count < maxDisplayItems)
+                
+                // Ensure Gold display exists or create it
+                if (!displayedRewards.TryGetValue(RewardType.Gold, out var goldView))
                 {
-                    // Create new gold display
+                    // Gold doesn't exist yet - create it with the conversion value
                     var goldSlice = new SliceDefinition
                     {
                         rewardType = RewardType.Gold,
                         amount = goldValue,
-                        icon = null,
+                        icon = goldIcon,
                         rarity = 0
                     };
                     DisplayStackableReward(goldSlice);
+                }
+                else
+                {
+                    // Gold already exists - just add to it
+                    goldView.AddQuantity(goldValue);
                 }
                 
                 // Don't remove or destroy the item - keep it displayed

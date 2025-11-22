@@ -16,7 +16,6 @@ namespace WheelGame.UI
         [SerializeField] private Button spinButton;
         [SerializeField] private Button walkButton;
         [SerializeField] private TMP_Text zoneText_value;
-        [SerializeField] private TMP_Text tempReward_value;
         [SerializeField] private TMP_Text bankedReward_value;
         [SerializeField] private RewardsDisplayPanel rewardsDisplayPanel;
         [SerializeField] private RewardPopupUI rewardPopup;
@@ -36,7 +35,6 @@ namespace WheelGame.UI
             if (spinButton == null) spinButton = transform.Find("Buttons/Button_Spin")?.GetComponent<Button>();
             if (walkButton == null) walkButton = transform.Find("Buttons/Button_WalkAway")?.GetComponent<Button>();
             if (zoneText_value == null) zoneText_value = transform.Find("Panel_Top/ZoneLabel_value")?.GetComponent<TMP_Text>();
-            if (tempReward_value == null) tempReward_value = transform.Find("Panel_Top/RewardLabel_value")?.GetComponent<TMP_Text>();
             if (bankedReward_value == null) bankedReward_value = transform.Find("Panel_Top/BankedLabel_value")?.GetComponent<TMP_Text>();
             if (rewardsDisplayPanel == null) rewardsDisplayPanel = GetComponentInChildren<RewardsDisplayPanel>();
             if (rewardPopup == null) rewardPopup = GetComponentInChildren<RewardPopupUI>();
@@ -130,7 +128,6 @@ namespace WheelGame.UI
         private void OnRewardChanged()
         {
             if (rewardManager == null) rewardManager = FindObjectOfType<RewardManager>();
-            if (tempReward_value != null) tempReward_value.text = rewardManager != null ? rewardManager.TemporaryReward.ToString() : "0";
             if (bankedReward_value != null) bankedReward_value.text = rewardManager != null ? rewardManager.BankedReward.ToString() : "0";
         }
 
@@ -152,7 +149,7 @@ namespace WheelGame.UI
             // handle non-bomb rewards
             if (def.rewardType != Core.RewardType.Bomb)
             {
-                rewardManager.AddReward(def.amount);
+                rewardManager.AddReward(def.amount, def.rewardType);
                 // advance zone after successful reward
                 FindObjectOfType<ZoneController>().AdvanceZone();
             }

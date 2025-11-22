@@ -33,9 +33,23 @@ namespace WheelGame.Core
             EventBus.OnRewardChanged?.Invoke();
         }
 
-        public void AddReward(int amount)
+        public void AddReward(int amount, RewardType rewardType)
         {
-            TemporaryReward += amount;
+            // Only Gold contributes to temporary rewards
+            if (rewardType == RewardType.Gold)
+            {
+                TemporaryReward += amount;
+                EventBus.OnRewardChanged?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Converts gold value (e.g., from duplicate item) to banked rewards.
+        /// </summary>
+        public void ConvertItemToGold(int goldValue)
+        {
+            BankedReward += goldValue;
+            saveSystem.SaveBank(BankedReward);
             EventBus.OnRewardChanged?.Invoke();
         }
 

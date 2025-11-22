@@ -56,16 +56,12 @@ namespace WheelGame.Core
             sliceCount = Mathf.Max(3, builder.SetupSlices(preset.slices));
         }
 
-        /// <summary>
-        /// Starts spin. If targetIndex == -1 -> random pick (but deterministic within preset)
-        /// </summary>
         public void StartSpin(int targetIndex = -1)
         {
             if (isSpinning) return;
             isSpinning = true;
             EventBus.OnSpinStarted?.Invoke();
 
-            // choose deterministic target based on preset if not specified
             var preset = zoneController.CurrentPreset;
             if (preset == null) { Debug.LogError("Preset null"); return; }
 
@@ -82,16 +78,12 @@ namespace WheelGame.Core
 
             // calculate rotation degrees to land on target
             float anglePerSlice = 360f / sliceCount;
-            // pointer is at top (0deg). Layout is clockwise: index 0 at top, index 1 at top-right, etc.
-            // To show a slice at the pointer, we rotate the wheel clockwise (negative Z rotation)
-            // Add random offset (0-44 degrees) to vary the final rotation to 45-degree multiples
-            float randomOffset = rand.Next(0, 45); // 0 to 44 degrees
+            float randomOffset = rand.Next(0, 45); 
             float endRotation = -(minFullRotations * 360f + targetIndex * anglePerSlice + randomOffset);
 
             // Ensure final rotation aligns to nearest multiple of 45 degrees
             endRotation = SnapToNearestQuarterRotation(endRotation);
 
-            // Do tween
             wheelRoot
                 .DORotate(new Vector3(0, 0, endRotation), spinDuration, RotateMode.FastBeyond360)
                 .SetEase(spinEase)

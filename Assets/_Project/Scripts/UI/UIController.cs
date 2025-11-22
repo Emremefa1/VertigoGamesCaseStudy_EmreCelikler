@@ -70,12 +70,13 @@ namespace WheelGame.UI
                 walkButton.onClick.RemoveAllListeners();
                 walkButton.onClick.AddListener(() =>
                 {
-                    // walk away only allowed when wheel not spinning and zone is safe or super
                     if (wheelController != null && !wheelController.IsSpinning)
                     {
                         if (zoneController.IsSafeZone || zoneController.IsSuperZone)
                         {
                             rewardManager.WalkAway();
+                            zoneController.SetZone(1);
+                            rewardsDisplayPanel.ClearDisplay();
                         }
                         else
                         {

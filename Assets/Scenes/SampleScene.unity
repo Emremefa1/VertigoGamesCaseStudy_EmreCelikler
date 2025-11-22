@@ -1474,7 +1474,7 @@ GameObject:
   - component: {fileID: 1164319575}
   - component: {fileID: 1164319574}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1865,7 +1865,7 @@ GameObject:
   - component: {fileID: 1812294198}
   - component: {fileID: 1812294197}
   m_Layer: 5
-  m_Name: GoldImage
+  m_Name: ui_image_bankedgold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

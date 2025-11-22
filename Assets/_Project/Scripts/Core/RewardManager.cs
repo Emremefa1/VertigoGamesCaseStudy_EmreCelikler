@@ -35,7 +35,6 @@ namespace WheelGame.Core
 
         public void AddReward(int amount, RewardType rewardType)
         {
-            // Only Gold contributes to temporary rewards
             if (rewardType == RewardType.Gold)
             {
                 TemporaryReward += amount;

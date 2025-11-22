@@ -237,7 +237,7 @@ namespace WheelGame.UI
             {
                 if (isBomb)
                 {
-                    reviveCostText.text = $"Cost: {reviveCost} Gold";
+                    reviveCostText.text = reviveCost.ToString();
                     reviveCostText.gameObject.SetActive(true);
                 }
                 else
